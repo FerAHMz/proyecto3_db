@@ -74,3 +74,42 @@ CREATE TABLE Pagos (
   fecha_pago DATE NOT NULL,
   FOREIGN KEY (id_reserva) REFERENCES Reservas(id) ON DELETE CASCADE
 );
+
+-- Crear la tabla de Horarios
+CREATE TABLE Horarios (
+  id SERIAL PRIMARY KEY NOT NULL,
+  id_cancha INT NOT NULL,
+  fecha DATE NOT NULL,
+  hora_inicio TIME NOT NULL,
+  hora_fin TIME NOT NULL,
+  FOREIGN KEY (id_cancha) REFERENCES Canchas(id) ON DELETE CASCADE
+);
+
+-- Crear la tabla de Cancelaciones
+CREATE TABLE Cancelaciones (
+  id SERIAL PRIMARY KEY NOT NULL,
+  id_reserva INT NOT NULL,
+  fecha_cancelacion TIMESTAMP NOT NULL,
+  motivo TEXT,
+  FOREIGN KEY (id_reserva) REFERENCES Reservas(id) ON DELETE CASCADE
+);
+
+-- Crear la tabla de Clientes_historial
+CREATE TABLE Clientes_historial (
+  id SERIAL PRIMARY KEY NOT NULL,
+  id_cliente INT NOT NULL,
+  id_reserva INT NOT NULL,
+  fecha_reserva TIMESTAMP NOT NULL,
+  monto DECIMAL(10,2) NOT NULL CHECK (monto >= 0),
+  FOREIGN KEY (id_cliente) REFERENCES Clientes(id) ON DELETE CASCADE,
+  FOREIGN KEY (id_reserva) REFERENCES Reservas(id) ON DELETE CASCADE
+);
+
+-- Crear la tabla de Reportes
+CREATE TABLE Reportes (
+  id SERIAL PRIMARY KEY NOT NULL,
+  id_reserva INT NOT NULL,
+  fecha_generacion TIMESTAMP NOT NULL,
+  detalles TEXT,
+  FOREIGN KEY (id_reserva) REFERENCES Reservas(id) ON DELETE CASCADE
+);
