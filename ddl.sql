@@ -113,3 +113,22 @@ CREATE TABLE Reportes (
   detalles TEXT,
   FOREIGN KEY (id_reserva) REFERENCES Reservas(id) ON DELETE CASCADE
 );
+
+
+-- Triggers para realizar algunas acciones específicas
+
+-- Trigger para actualizar el estado de la reserva a 'Confirmada' cuando se realice un pago
+CREATE OR REPLACE FUNCTION actualizar_estado_reserva() 
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE Reservas 
+  SET estado = 'Confirmada' 
+  WHERE id = NEW.id_reserva;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_actualizar_estado_reserva
+AFTER INSERT ON Pagos
+FOR EACH ROW
+EXECUTE FUNCTION actualizar_estado_reserva();
