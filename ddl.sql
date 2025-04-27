@@ -115,7 +115,7 @@ CREATE TABLE Reportes (
 );
 
 
--- Triggers para realizar algunas acciones específicas
+-- Triggers
 
 -- Trigger para actualizar el estado de la reserva a 'Confirmada' cuando se realice un pago
 CREATE OR REPLACE FUNCTION actualizar_estado_reserva() 
@@ -132,3 +132,21 @@ CREATE TRIGGER trigger_actualizar_estado_reserva
 AFTER INSERT ON Pagos
 FOR EACH ROW
 EXECUTE FUNCTION actualizar_estado_reserva();
+
+-- Trigger para calcular el monto del pago basado en el precio por hora de la cancha
+CREATE OR REPLACE FUNCTION calcular_monto_pago() 
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE Pagos
+  SET monto = (SELECT precio_hora * EXTRACT(HOUR FROM (NEW.fecha_fin - NEW.fecha_inicio))
+              FROM Canchas 
+              WHERE Canchas.id = NEW.id_cancha)
+  WHERE id = NEW.id_reserva;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_calcular_monto_pago
+AFTER INSERT ON Reservas
+FOR EACH ROW
+EXECUTE FUNCTION calcular_monto_pago();
