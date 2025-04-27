@@ -150,3 +150,18 @@ CREATE TRIGGER trigger_calcular_monto_pago
 AFTER INSERT ON Reservas
 FOR EACH ROW
 EXECUTE FUNCTION calcular_monto_pago();
+
+-- Trigger para mantener el historial de reservas del cliente
+CREATE OR REPLACE FUNCTION actualizar_historial_cliente() 
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO Clientes_historial (id_cliente, id_reserva, fecha_reserva, monto)
+  VALUES (NEW.id_cliente, NEW.id, NEW.fecha_inicio, (SELECT monto FROM Pagos WHERE id_reserva = NEW.id));
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_actualizar_historial_cliente
+AFTER INSERT ON Reservas
+FOR EACH ROW
+EXECUTE FUNCTION actualizar_historial_cliente();
