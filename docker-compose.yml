@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:17
+    container_name: postgres-canchas
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpass
+      POSTGRES_DB: canchasdb
+    volumes:
+      - ./backend/db:/docker-entrypoint-initdb.d
+    restart: always
