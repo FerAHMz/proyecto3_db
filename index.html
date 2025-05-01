@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de reportes - Canchas Deportivas</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js para gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sistema de reportes - Canchas Deportivas</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Reporte 1: Reservas por período -->
+        <section class="report-section">
+            <h2>Reporte de reservas por período</h2>
+            <div class="report-filters">
+                <div class="form-group">
+                    <label for="reserva-fecha-inicio">Fecha de inicio</label>
+                    <input type="date" id="reserva-fecha-inicio" name="reserva-fecha-inicio">
+                </div>
+                <div class="form-group">
+                    <label for="reserva-fecha-fin">Fecha de fin</label>
+                    <input type="date" id="reserva-fecha-fin" name="reserva-fecha-fin">
+                </div>
+                <div class="form-group">
+                    <label for="reserva-cancha">Cancha</label>
+                    <select id="reserva-cancha" name="reserva-cancha">
+                        <option value="">Todas las canchas</option>
+                        <!-- BACKEND: Llenar dinámicamente con las canchas de la DB -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reserva-estado">Estado</label>
+                    <select id="reserva-estado" name="reserva-estado">
+                        <option value="">Todos</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Confirmada">Confirmada</option>
+                        <option value="Cancelada">Cancelada</option>
+                    </select>
+                </div>
+                <!-- Filtro adicional no trivial: Rango de montos -->
+                <div class="form-group">
+                    <label for="reserva-monto-min">Monto mínimo ($)</label>
+                    <input type="number" id="reserva-monto-min" min="0" step="0.01" placeholder="Mínimo">
+                </div>
+                <div class="form-group">
+                    <label for="reserva-monto-max">Monto máximo ($)</label>
+                    <input type="number" id="reserva-monto-max" min="0" step="0.01" placeholder="Máximo">
+                </div>
+            </div>
+            
+            <button id="btn-reservas">Generar reporte</button>
+            <div class="export-buttons">
+                <button onclick="exportarPDF('reservas')">Exportar a PDF</button>
+                <button onclick="exportarExcel('reservas')">Exportar a Excel</button>
+            </div>
+            
+            <div class="report-results">
+                <div class="chart-container">
+                    <canvas id="grafica-reservas"></canvas>
+                </div>
+                <table id="tabla-reservas">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Cancha</th>
+                            <th>Fecha</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora Fin</th>
+                            <th>Estado</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reporte 2: Ingresos por cancha/deporte -->
+        <section class="report-section">
+            <h2>Reporte de ingresos</h2>
+            <div class="report-filters">
+                <div class="form-group">
+                    <label for="ingreso-fecha-inicio">Fecha de inicio</label>
+                    <input type="date" id="ingreso-fecha-inicio">
+                </div>
+                <div class="form-group">
+                    <label for="ingreso-fecha-fin">Fecha de fin</label>
+                    <input type="date" id="ingreso-fecha-fin">
+                </div>
+                <div class="form-group">
+                    <label for="ingreso-cancha">Cancha</label>
+                    <select id="ingreso-cancha">
+                        <option value="">Todas</option>
+                        <!-- BACKEND: Llenar dinámicamente con las canchas de la DB -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ingreso-deporte">Deporte</label>
+                    <select id="ingreso-deporte">
+                        <option value="">Todos</option>
+                        <!-- BACKEND: Llenar dinámicamente con los deportes de la DB -->
+                    </select>
+                </div>
+                <!-- Filtro adicional no trivial: Método de pago -->
+                <div class="form-group">
+                    <label for="ingreso-metodo">Método de pago</label>
+                    <select id="ingreso-metodo">
+                        <option value="">Todos</option>
+                        <option value="Tarjeta">Tarjeta</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Transferencia">Transferencia</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button id="btn-ingresos">Generar reporte</button>
+            <div class="export-buttons">
+                <button onclick="exportarPDF('ingresos')">Exportar a PDF</button>
+                <button onclick="exportarExcel('ingresos')">Exportar a Excel</button>
+            </div>
+            
+            <div class="report-results">
+                <div class="chart-container">
+                    <canvas id="grafica-ingresos"></canvas>
+                </div>
+                <table id="tabla-ingresos">
+                    <thead>
+                        <tr>
+                            <th>Cancha</th>
+                            <th>Deporte</th>
+                            <th>Total Reservas</th>
+                            <th>Ingresos Totales</th>
+                            <th>Método más usado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reporte 3: Clientes frecuentes -->
+        <section class="report-section">
+            <h2>Clientes frecuentes</h2>
+            <div class="report-filters">
+                <div class="form-group">
+                    <label for="cliente-fecha-inicio">Fecha de inicio</label>
+                    <input type="date" id="cliente-fecha-inicio">
+                </div>
+                <div class="form-group">
+                    <label for="cliente-fecha-fin">Fecha de fin</label>
+                    <input type="date" id="cliente-fecha-fin">
+                </div>
+                <div class="form-group">
+                    <label for="cliente-min-reservas">Mín. reservas</label>
+                    <input type="number" id="cliente-min-reservas" min="1" value="3">
+                </div>
+                <div class="form-group">
+                    <label for="cliente-min-monto">Mín. gastado ($)</label>
+                    <input type="number" id="cliente-min-monto" min="0" step="0.01" value="100">
+                </div>
+                <!-- Filtro adicional no trivial: Antigüedad -->
+                <div class="form-group">
+                    <label for="cliente-antiguedad">Antigüedad</label>
+                    <select id="cliente-antiguedad">
+                        <option value="">Todos</option>
+                        <option value="nuevo">Nuevos (primera reserva)</option>
+                        <option value="recurrente">Recurrentes</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button id="btn-clientes">Generar reporte</button>
+            <div class="export-buttons">
+                <button onclick="exportarPDF('clientes')">Exportar a PDF</button>
+                <button onclick="exportarExcel('clientes')">Exportar a Excel</button>
+            </div>
+            
+            <div class="report-results">
+                <div class="chart-container">
+                    <canvas id="grafica-clientes"></canvas>
+                </div>
+                <table id="tabla-clientes">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Email</th>
+                            <th>Reservas</th>
+                            <th>Total Gastado</th>
+                            <th>Primera Reserva</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reporte 4: Disponibilidad -->
+        <section class="report-section">
+            <h2>Disponibilidad de canchas</h2>
+            <div class="report-filters">
+                <div class="form-group">
+                    <label for="disp-fecha">Fecha</label>
+                    <input type="date" id="disp-fecha">
+                </div>
+                <div class="form-group">
+                    <label for="disp-hora-inicio">Hora inicio</label>
+                    <input type="time" id="disp-hora-inicio" value="08:00">
+                </div>
+                <div class="form-group">
+                    <label for="disp-hora-fin">Hora fin</label>
+                    <input type="time" id="disp-hora-fin" value="20:00">
+                </div>
+                <div class="form-group">
+                    <label for="disp-deporte">Deporte</label>
+                    <select id="disp-deporte">
+                        <option value="">Todos</option>
+                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                    </select>
+                </div>
+                <!-- Filtro adicional no trivial: Capacidad -->
+                <div class="form-group">
+                    <label for="disp-capacidad">Capacidad mínima</label>
+                    <input type="number" id="disp-capacidad" min="1" placeholder="Mínimo de personas">
+                </div>
+            </div>
+            
+            <button id="btn-disponibilidad">Generar reporte</button>
+            <div class="export-buttons">
+                <button onclick="exportarPDF('disponibilidad')">Exportar a PDF</button>
+                <button onclick="exportarExcel('disponibilidad')">Exportar a Excel</button>
+            </div>
+            
+            <div class="report-results">
+                <div class="chart-container">
+                    <canvas id="grafica-disponibilidad"></canvas>
+                </div>
+                <table id="tabla-disponibilidad">
+                    <thead>
+                        <tr>
+                            <th>Cancha</th>
+                            <th>Deporte</th>
+                            <th>Horario</th>
+                            <th>Estado</th>
+                            <th>Capacidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reporte 5: Cancelaciones -->
+        <section class="report-section">
+            <h2>Reporte de cancelaciones</h2>
+            <div class="report-filters">
+                <div class="form-group">
+                    <label for="cancelacion-fecha-inicio">Fecha inicio</label>
+                    <input type="date" id="cancelacion-fecha-inicio">
+                </div>
+                <div class="form-group">
+                    <label for="cancelacion-fecha-fin">Fecha fin</label>
+                    <input type="date" id="cancelacion-fecha-fin">
+                </div>
+                <div class="form-group">
+                    <label for="cancelacion-cancha">Cancha</label>
+                    <select id="cancelacion-cancha">
+                        <option value="">Todas</option>
+                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cancelacion-cliente">Cliente</label>
+                    <select id="cancelacion-cliente">
+                        <option value="">Todos</option>
+                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                    </select>
+                </div>
+                <!-- Filtro adicional no trivial: Tiempo de anticipación -->
+                <div class="form-group">
+                    <label for="cancelacion-anticipacion">Canceló con menos de</label>
+                    <select id="cancelacion-anticipacion">
+                        <option value="">Cualquier tiempo</option>
+                        <option value="24">24 horas</option>
+                        <option value="48">48 horas</option>
+                        <option value="168">1 semana</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button id="btn-cancelaciones">Generar reporte</button>
+            <div class="export-buttons">
+                <button onclick="exportarPDF('cancelaciones')">Exportar a PDF</button>
+                <button onclick="exportarExcel('cancelaciones')">Exportar a Excel</button>
+            </div>
+            
+            <div class="report-results">
+                <div class="chart-container">
+                    <canvas id="grafica-cancelaciones"></canvas>
+                </div>
+                <table id="tabla-cancelaciones">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Cancha</th>
+                            <th>Fecha reserva</th>
+                            <th>Fecha cancelación</th>
+                            <th>Monto perdido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Sistema de reportes - Canchas Deportivas &copy; 2025</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html> 
