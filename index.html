@@ -228,22 +228,28 @@
                     <label for="disp-deporte">Deporte</label>
                     <select id="disp-deporte">
                         <option value="">Todos</option>
-                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                        <!-- Se llenará dinámicamente -->
                     </select>
                 </div>
-                <!-- Filtro adicional no trivial: Capacidad -->
+                <div class="form-group">
+                    <label for="disp-cancha">Cancha</label>
+                    <select id="disp-cancha">
+                        <option value="">Todas</option>
+                        <!-- Se llenará dinámicamente -->
+                    </select>
+                </div>
                 <div class="form-group">
                     <label for="disp-capacidad">Capacidad mínima</label>
                     <input type="number" id="disp-capacidad" min="1" placeholder="Mínimo de personas">
                 </div>
             </div>
-            
+        
             <button id="btn-disponibilidad">Generar reporte</button>
             <div class="export-buttons">
                 <button onclick="exportarPDF('disponibilidad')">Exportar a PDF</button>
                 <button onclick="exportarExcel('disponibilidad')">Exportar a Excel</button>
             </div>
-            
+        
             <div class="report-results">
                 <div class="chart-container">
                     <canvas id="grafica-disponibilidad"></canvas>
@@ -259,7 +265,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- BACKEND: Llenar dinámicamente con los datos de la DB -->
+                        <!-- Se llenará dinámicamente -->
                     </tbody>
                 </table>
             </div>
