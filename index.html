@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="style.css">
     <!-- Chart.js para gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <header>
@@ -57,8 +60,7 @@
             
             <button id="btn-reservas">Generar reporte</button>
             <div class="export-buttons">
-                <button onclick="exportarPDF('reservas')">Exportar a PDF</button>
-                <button onclick="exportarExcel('reservas')">Exportar a Excel</button>
+                <button onclick="mostrarOpcionesExportar('reservas')">Exportar</button>
             </div>
             
             <div class="report-results">
@@ -125,8 +127,7 @@
             
             <button id="btn-ingresos">Generar reporte</button>
             <div class="export-buttons">
-                <button onclick="exportarPDF('ingresos')">Exportar a PDF</button>
-                <button onclick="exportarExcel('ingresos')">Exportar a Excel</button>
+                <button onclick="mostrarOpcionesExportar('ingresos')">Exportar</button>
             </div>
             
             <div class="report-results">
@@ -183,8 +184,7 @@
             
             <button id="btn-clientes">Generar reporte</button>
             <div class="export-buttons">
-                <button onclick="exportarPDF('clientes')">Exportar a PDF</button>
-                <button onclick="exportarExcel('clientes')">Exportar a Excel</button>
+                <button onclick="mostrarOpcionesExportar('clientes')">Exportar</button>
             </div>
             
             <div class="report-results">
@@ -246,8 +246,7 @@
         
             <button id="btn-disponibilidad">Generar reporte</button>
             <div class="export-buttons">
-                <button onclick="exportarPDF('disponibilidad')">Exportar a PDF</button>
-                <button onclick="exportarExcel('disponibilidad')">Exportar a Excel</button>
+                <button onclick="mostrarOpcionesExportar('disponibilidad')">Exportar</button>
             </div>
         
             <div class="report-results">
@@ -311,8 +310,7 @@
             
             <button id="btn-cancelaciones">Generar reporte</button>
             <div class="export-buttons">
-                <button onclick="exportarPDF('cancelaciones')">Exportar a PDF</button>
-                <button onclick="exportarExcel('cancelaciones')">Exportar a Excel</button>
+                <button onclick="mostrarOpcionesExportar('cancelaciones')">Exportar</button>
             </div>
             
             <div class="report-results">

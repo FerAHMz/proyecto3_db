@@ -513,12 +513,60 @@ function actualizarGraficaCancelaciones(data) {
     });
 }
 
-// ---------------------- REPORTES PENDIENTES ----------------------
+// ---------------------- FUNCIONES DE EXPORTACION ----------------------
 
-function exportarPDF(tipo) {
-    alert(`Exportar ${tipo} a PDF (simulado)`);
+function exportarTabla(tipo, formato) {
+    const table = document.querySelector(`#tabla-${tipo}`);
+    if (!table) return alert("No se encontró la tabla para exportar.");
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(table);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Reporte");
+
+    const nombreArchivo = `reporte_${tipo}.${formato}`;
+
+    if (formato === 'xlsx') {
+        XLSX.writeFile(wb, nombreArchivo);
+    } else if (formato === 'csv') {
+        XLSX.writeFile(wb, nombreArchivo, { bookType: 'csv' });
+    } else {
+        alert("Formato no soportado.");
+    }
 }
 
-function exportarExcel(tipo) {
-    alert(`Exportar ${tipo} a Excel (simulado)`);
+async function exportarPDF(tipo) {
+    const table = document.querySelector(`#tabla-${tipo}`);
+    if (!table) return alert("No se encontró la tabla para exportar.");
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const headers = [...table.querySelectorAll("thead tr th")].map(th => th.innerText);
+    const rows = [...table.querySelectorAll("tbody tr")].map(tr =>
+        [...tr.querySelectorAll("td")].map(td => td.innerText)
+    );
+
+    doc.text(`Reporte: ${tipo}`, 14, 15);
+    doc.autoTable({
+        head: [headers],
+        body: rows,
+        startY: 20
+    });
+
+    doc.save(`reporte_${tipo}.pdf`);
+}
+
+function mostrarOpcionesExportar(tipo) {
+    const opcion = prompt(`¿En qué formato deseas exportar el reporte "${tipo}"?\nEscribe: "pdf", "excel" o "csv"`).toLowerCase();
+
+    if (opcion === 'pdf') {
+        exportarPDF(tipo);
+    } else if (opcion === 'excel') {
+        exportarTabla(tipo, 'xlsx');
+    } else if (opcion === 'csv') {
+        exportarTabla(tipo, 'csv');
+    } else if (opcion !== null) {
+        alert('Formato no válido. Por favor escribe "pdf", "excel" o "csv".');
+    }
 }
