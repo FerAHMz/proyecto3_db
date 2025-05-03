@@ -77,4 +77,3 @@ Project Link: [https://github.com/FerAHMz/proyecto3_db](https://github.com/FerAH
 [PostgreSQL-url]: https://www.postgresql.org/
 [Chart.js]: https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chart.js&logoColor=white
 [Chart-url]: https://www.chartjs.org/
-```
