@@ -48,7 +48,7 @@ To get a local copy up and running, follow these steps.
    
    - Option 2: Using Nginx
      - Configure Nginx to serve the `index.html` file
-     - Access through your configured port (typically http://localhost:80)
+     - Access through your configured port (typically http://localhost:8080)
 
 ## Usage
 
