@@ -2,7 +2,6 @@
 
 <div align="center">
   <a href="https://github.com/your-username/proyecto3_db">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Sports Court Management System</h3>
